@@ -18,4 +18,4 @@ Capteur ultrason sur D7
 après on connecte en USB notre STM32-Nucléo WB55RG a nôtre PC et après avoir installé ble_advertising.py et main.py
 on les drag n drop dans la carte STM32-Nucléo WB55RG
 
-on télécharge sur son téléphone le stm32.APK puis on ouvrent l'application et on se connecte à la carte des qu'elle est alimenté
+on télécharge sur son téléphone le stm32.APK puis on ouvrent l'application et on se connecte à la carte des qu'elle est alimenté elle est prête a l'utilisation
