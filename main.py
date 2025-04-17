@@ -5,15 +5,13 @@ import bluetooth
 from ble_advertising import advertising_payload
 from micropython import const
 
-# --- Capteur DHT22 sur A1 ---
+
 dht_pin = pyb.Pin('A1', pyb.Pin.OPEN_DRAIN)
 capteur = dht.DHT22(dht_pin)
 
-# --- Buzzer sur D5 ---
 buzzer = pyb.Pin('D5', pyb.Pin.OUT_PP)
 buzzer.low()
 
-# --- Servo sur D6 avec Timer 1 Channel 1 ---
 servo_pin = pyb.Pin('D6')
 timer = pyb.Timer(1, freq=50)
 pwm_servo = timer.channel(1, pyb.Timer.PWM, pin=servo_pin)
@@ -26,7 +24,6 @@ def set_servo_angle(angle):
 
 set_servo_angle(0)
 
-# --- Capteur ultrason Grove sur D7 ---
 SIG = pyb.Pin('D7', pyb.Pin.OUT_PP)
 
 def get_distance():
@@ -50,7 +47,6 @@ def get_distance():
     except:
         return -1
 
-# --- BLE ---
 _IRQ_CENTRAL_CONNECT = const(1)
 _IRQ_CENTRAL_DISCONNECT = const(2)
 _IRQ_GATTS_WRITE = const(3)
@@ -127,7 +123,6 @@ class BLEServer:
         else:
             print("Aucun client BLE connecte")
 
-# --- Demarrage BLE ---
 server = BLEServer()
 
 try:
@@ -138,7 +133,6 @@ try:
             hum = capteur.humidity()
             dist = get_distance()
 
-            # Affichage terminal
             print("=========================")
             print("Temperature : {:.1f} C".format(temp))
             print("Humidite    : {:.1f} %".format(hum))
@@ -147,16 +141,13 @@ try:
                 print("Attention : temperature elevee !")
             print("=========================")
 
-            # Buzzer si temperature elevee
             buzzer.high() if temp > 30 else buzzer.low()
 
-            # Retour en mode auto apres 3 sec
             if server._manual_control:
                 if time.ticks_diff(time.ticks_ms(), server._last_manual_time) > 3000:
                     print("Retour au mode automatique")
                     server._manual_control = False
 
-            # Controle automatique du servo
             if not server._manual_control:
                 if 0 < dist < 15 and server._servo_angle != 90:
                     set_servo_angle(90)
@@ -165,7 +156,6 @@ try:
                     set_servo_angle(0)
                     server._servo_angle = 0
 
-            # Envoi BLE
             payload = "T:{:.1f}C H:{:.1f}%".format(temp, hum)
             server.send_data(payload)
 
